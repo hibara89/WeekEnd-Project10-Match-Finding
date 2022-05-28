@@ -2,10 +2,10 @@ import React from "react";
 import Card from "./components/card/card";
 import Counterlikes from "./components/counters/counter-likes";
 import CounterDislikes from "./components/counters/counter-dislikes";
-import Dislike from "./components/like&dislike/dislike";
-import galerry from "./components/Galerry";
+import Dislike from "./components/like&dislike buttons/dislike";
+import galerry from "./data/Galerry";
 
-import Like from "./components/like&dislike/like";
+import Like from "./components/like&dislike buttons/like";
 import "./style.css";
 
 export class AppMatch extends React.Component {
@@ -22,29 +22,13 @@ export class AppMatch extends React.Component {
   }
 
   onclickLike = () => {
-    if (this.state.isFinished) return;
-
-    if (this.state.index === this.state.array.length) {
-      this.setState({
-        counter_like: this.state.counter_like + 1,
-        isFinished: true,
-      });
-      return;
-    }
-    if (!this.state.isFinished) {
-      this.setState({
-        counter_like: this.state.counter_like + 1,
-        index: this.state.index + 1,
-      });
-    }
-    console.log(this.state.index);
+    this.setState({
+      counter_like: this.state.counter_like + 1,
+      index: this.state.index + 1,
+    });
   };
 
   onclickDislike = () => {
-    if (this.state.index === this.state.array.length) {
-      this.setState({ isFinished: true });
-      return;
-    }
     this.setState({
       counter_dislike: this.state.counter_dislike + 1,
       index: this.state.index + 1,
@@ -52,6 +36,9 @@ export class AppMatch extends React.Component {
   };
 
   render() {
+    const displayedImage =
+      this.state.array[this.state.counter_dislike + this.state.counter_like];
+
     return (
       <div className="app_container">
         <div className="counters_container">
@@ -68,17 +55,33 @@ export class AppMatch extends React.Component {
             </div>
           </div>
         </div>
+        {displayedImage ? (
+          <div className="card-container">
+            <Card
+              image={this.state.array[this.state.index].image}
+              name={this.state.array[this.state.index].name}
+            />
+          </div>
+        ) : this.state.counter_like > this.state.counter_dislike ? (
+          <>
+            <h2 className="final-message">
+              Seems like you love colorful birds
+            </h2>
+            <img
+              src="https://thumbs.dreamstime.com/z/funny-colorful-bird-kids-cartoon-amazing-brightly-colored-small-birdie-cute-child-greeting-card-design-vector-illustration-70726541.jpg"
+              style={{ width: "300px", height: "300px" }}
+            />
+          </>
+        ) : (
+          <h2 className="final-message">I am really shocked!!! </h2>
+        )}
 
-        <div className="card-container">
-          <Card
-            image={this.state.array[this.state.index].image}
-            name={this.state.array[this.state.index].name}
-          />
-        </div>
-        <div className="buttons-container">
-          <Dislike onClickDislike={this.onclickDislike} />
-          <Like onClickLike={this.onclickLike} />
-        </div>
+        {this.state.counter_like + this.state.counter_dislike < 10 && (
+          <div className="buttons-container">
+            <Dislike onClickDislike={this.onclickDislike} />
+            <Like onClickLike={this.onclickLike} />
+          </div>
+        )}
       </div>
     );
   }
